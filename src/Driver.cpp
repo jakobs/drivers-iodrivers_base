@@ -41,6 +41,8 @@
 #endif
 #endif
 
+#include "cti485.h"
+
 using namespace std;
 using namespace iodrivers_base;
 
@@ -447,6 +449,15 @@ bool Driver::setSerialBaudrate(int fd, int brate) {
         perror("Failed to set speed \n");    
         return false;
     }
+
+    int cur_mode = 0;
+    ioctl(fd, TIOCSER485GET, &cur_mode);
+    if (cur_mode != TIOCSER485HALFDUPLEX)
+    {
+        cur_mode = TIOCSER485HALFDUPLEX;
+        ioctl(fd, TIOCSER485SET, &cur_mode);
+    }
+
     return true;
 }
 
